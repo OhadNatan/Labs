@@ -73,6 +73,7 @@ unsigned long int num, starter;
 	unsigned long int limit = num/2;
 	unsigned long int currDiv = starter;
 	int finder = 0;
+	int NotFind = 0;
 
 	while(currDiv <= limit)
 	{
@@ -92,11 +93,12 @@ unsigned long int num, starter;
 			signal(notPrimarySem);
 			break;
 		}
+		NotFind = 1;
 		currDiv += interval;
 		signal(notPrimarySem);
 	}
 	wait(Csem);
-	if(finder != 1)
+	if(finder != 1 && NotFind == 1)
 		currDiv -= interval;
 	printf("Process with pid %d started with %lu incremented by %d. Tested up to %lu \n",getpid(), starter, interval, currDiv);
 	if(--counter == 0)
