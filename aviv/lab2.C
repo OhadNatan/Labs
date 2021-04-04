@@ -4,14 +4,11 @@
 #include <kernel.h>
 
 /* global paremeters sherd by all proc */
-int primaryNum=0, pid;
-int mainsem, functionSem , printSem; //main Sem is going to go from 1-numOfProc
-unsigned long int divisor,winning_starter ,processesNum;
+int primaryNum=0, pid; //pid that win the race , primary num is a flag
+int mainsem, functionSem; //main Sem is going to go from 1-numOfProc
+unsigned long int divisor,winning_starter ,processesNum;// divisor is what the find div function look for 
 
-/*------------------------------------------------------------------------
- *  xmain  --  producer and consumer processes synchronized with semaphores
- *------------------------------------------------------------------------
- */
+
 xmain()
 {
 	//find div dicliration 
@@ -23,11 +20,10 @@ xmain()
 	
 	//start value for semaphores
 	mainsem = screate(0);
-	printSem=screate(1);
 	functionSem = screate(1);
 	printf("Enter unsigned long integer NUM:\n");
 	scanf("%lu",&num);
-	if (num%2!=0){
+	if (num%2!=0||num==2){  // check if the number is not even or the num == 2, then enter the if
 		printf("Enter number of processes:\n");
 		scanf("%d",&processesNum);
 		//Loop to initialize multiple processes depending on user selection
@@ -52,12 +48,12 @@ xmain()
 		{
 			printf("%lu is NOT prime\n", num);
 			printf("%lu / %lu = %lu\n", num, divisor, num/divisor);
-			printf("Winner pid  = %d winner starter = %d \n", pid,winning_starter );
+			printf("Winner pid  = %d winner starter = %lu \n", pid,winning_starter );
 		}
 	}
 	else
 		//if the number to check is even
-		printf("\nthe number %lu is even, is not a prime \n");
+		printf("\nthe number %lu is even, is not a prime \n",num);
 	return 0;
 }
 
@@ -67,10 +63,15 @@ xmain()
 findDiv( num, starter)
 unsigned long int num, starter;
 {
-	int interval = processesNum*2;
+	int interval = processesNum*2,flag =1;
 	unsigned long int checkUntil = num/2,currDiv = starter;
+	if (starter>checkUntil) 
+	{
+		flag =0;
+		currDiv+=interval;
+	}
 	//printf( "\n num is %lu \n starter = %lu \n",num,starter);
-	while(currDiv <= checkUntil)
+	while((currDiv <= checkUntil) && flag)
 	{
 		wait(functionSem);
 		if(primaryNum)  //if other process already find the divisor
