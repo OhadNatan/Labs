@@ -21,6 +21,7 @@ xmain()
 	char procName[] = "proc_X";
 	primaryNum = 0;
 
+	//sems intilize 
 	mainsem = screate(0);
 	Csem = screate(1);
 	notPrimarySem = screate(1);
@@ -34,6 +35,7 @@ xmain()
 	counter = processesNum;
 	Totalprocesses = processesNum;
 
+	//even validation
 	if(num!=2 && num%2==0)
 	{
 		printf("The number you entered is even !");
