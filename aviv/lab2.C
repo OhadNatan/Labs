@@ -93,9 +93,9 @@ unsigned long int num, starter;
 		
 	}
 	//A semaphore that works to prevent stopping printing in the middle
-	wait(printSem);
+	wait(functionSem);
 	printf("Process with pid %d started with starter %lu incremented by %d. Tested up to %lu \n",getpid(), starter, interval,currDiv-interval);
-	signal(printSem);
+	signal(functionSem);
 	
 	signal(mainsem);
 	return 0;
