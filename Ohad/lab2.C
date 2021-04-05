@@ -6,8 +6,8 @@
 /* external variables are shared by all processes */
 int counter, primaryNum, pid;
 int mainsem, notPrimarySem, Csem;
-int Totalprocesses;
-unsigned long int divisor, winStarter;
+int winStarter;
+unsigned long int num, divisor;
 
 /*------------------------------------------------------------------------
  *  xmain  --  producer and consumer processes synchronized with semaphores
@@ -16,8 +16,7 @@ unsigned long int divisor, winStarter;
 xmain()
 {
 	int	findDiv();
-	int	i, processesNum;
-	unsigned long int num, starter;
+	int	i, processesNum, starter, interval;
 	char procName[] = "proc_X";
 	primaryNum = 0;
 
@@ -29,11 +28,16 @@ xmain()
 	printf("Enter unsigned long integer NUM:\n");
 	scanf("%lu",&num);
 
-	printf("Enter number of processes:\n");
-	scanf("%d",&processesNum);
+	do{
+		printf("Enter number of processes:\n");
+		scanf("%d",&processesNum);
+		if(processesNum>30)
+			printf("***\nThe max limit is 30!\n***\n");
+	}while (processesNum>30);
+	
 
 	counter = processesNum;
-	Totalprocesses = processesNum;
+	interval = processesNum*2;
 
 	//even validation
 	if(num!=2 && num%2==0)
@@ -46,7 +50,7 @@ xmain()
 	{
 		procName[5] = i + '0'; //dynamic process name by his index
 		starter = 3+2*(i-1);
-		resume(create(findDiv,INITSTK,INITPRIO,procName,3,num,starter));
+		resume(create(findDiv,INITSTK,INITPRIO,procName,2,interval,starter));
 	}
 	//waiting until the last process we have opened will signal this semaphore 
 	wait(mainsem);
@@ -69,10 +73,9 @@ xmain()
  * 				 from the series that starts with a starter and each additional step add the variable 'interval' (Totalprocesses*2)
  *------------------------------------------------------------------------
  */
-findDiv( num, starter)
-unsigned long int num, starter;
+findDiv( interval, starter)
+int interval, starter;
 {
-	int interval = Totalprocesses*2;
 	unsigned long int limit = num/2;
 	unsigned long int currDiv = starter;
 	
@@ -106,7 +109,7 @@ unsigned long int num, starter;
 	wait(Csem);
 	if(notFind == 1) //check if needed dec interval from the last divisor search 
 		currDiv -= interval;
-	printf("Process with pid %d started with %lu incremented by %d. Tested up to %lu \n",getpid(), starter, interval, currDiv);
+	printf("Process with pid %d started with %d incremented by %d. Tested up to %lu \n",getpid(), starter, interval, currDiv);
 	if(--counter == 0) //check if this is the last process to run from those we start to find divisor
 		signal(mainsem);
 	signal(Csem);
