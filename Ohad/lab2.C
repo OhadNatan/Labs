@@ -21,6 +21,7 @@ xmain()
 	char procName[] = "proc_X";
 	primaryNum = 0;
 
+	//sems intilize 
 	mainsem = screate(0);
 	Csem = screate(1);
 	notPrimarySem = screate(1);
@@ -34,20 +35,23 @@ xmain()
 	counter = processesNum;
 	Totalprocesses = processesNum;
 
+	//even validation
 	if(num!=2 && num%2==0)
 	{
 		printf("The number you entered is even !");
 		return 1;
 	}
-
+	
 	for(i=1;i<=processesNum;i++)
 	{
-		procName[5] = i + '0';
+		procName[5] = i + '0'; //dynamic process name by his index
 		starter = 3+2*(i-1);
 		resume(create(findDiv,INITSTK,INITPRIO,procName,3,num,starter));
 	}
+	//waiting until the last process we have opened will signal this semaphore 
 	wait(mainsem);
-	wait(notPrimarySem);
+
+	//result check and printing it
 	if(primaryNum==0){
 		printf("%lu is prime\n",num);
 	}
@@ -61,7 +65,8 @@ xmain()
 }
 
 /*------------------------------------------------------------------------
- *  findDiv  --  
+ *  findDiv  --  A function that looks for a divisor number variable
+ * 				 from the series that starts with a starter and each additional step add the variable 'interval' (Totalprocesses*2)
  *------------------------------------------------------------------------
  */
 findDiv( num, starter)
@@ -70,34 +75,39 @@ unsigned long int num, starter;
 	int interval = Totalprocesses*2;
 	unsigned long int limit = num/2;
 	unsigned long int currDiv = starter;
-	int finder = 0;
+	
+	//status flag - if the func find divisor. 0 - find the divisor or starter greater than limit, 1 - didn't find
+	int notFind = 0;
 
 	while(currDiv <= limit)
 	{
 		wait(notPrimarySem);
-		if(primaryNum==1)
+		if(primaryNum==1) //other process found the divisor
 		{
 			signal(notPrimarySem);
 			break;
 		}
-		if((num%currDiv)==0)
+		if((num%currDiv)==0) //the current process found the diviser
 		{
-			primaryNum = 1;
+			primaryNum = 1; //let other processes know the current find the divisor
+			notFind = 0; //set status flag
+			
+			//saving information at global variables for later printf
 			pid = getpid();
-			finder = 1;
 			divisor = currDiv;
 			winStarter = starter;
 			signal(notPrimarySem);
 			break;
 		}
+		notFind = 1;
 		currDiv += interval;
 		signal(notPrimarySem);
 	}
 	wait(Csem);
-	if(finder != 1)
+	if(notFind == 1) //check if needed dec interval from the last divisor search 
 		currDiv -= interval;
 	printf("Process with pid %d started with %lu incremented by %d. Tested up to %lu \n",getpid(), starter, interval, currDiv);
-	if(--counter == 0)
+	if(--counter == 0) //check if this is the last process to run from those we start to find divisor
 		signal(mainsem);
 	signal(Csem);
 	return 0;
