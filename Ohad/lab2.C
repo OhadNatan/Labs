@@ -69,7 +69,7 @@ xmain()
 }
 
 /*------------------------------------------------------------------------
- *  findDiv  --  A function that looks for a divisor number variable
+ *  findDiv  --  A function that looks for a divisor for global variable 'num'
  * 				 from the series that starts with a starter and each additional step add the variable 'interval' (Totalprocesses*2)
  *------------------------------------------------------------------------
  */
