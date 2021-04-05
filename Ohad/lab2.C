@@ -10,7 +10,7 @@ int winStarter;
 unsigned long int num, divisor;
 
 /*------------------------------------------------------------------------
- *  xmain  --  producer and consumer processes synchronized with semaphores
+ *  xmain 
  *------------------------------------------------------------------------
  */
 xmain()
