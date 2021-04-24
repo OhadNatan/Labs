@@ -4,7 +4,8 @@
 #include <kernel.h>
 #include <sleep.h>
 #include <io.h>
-#include <New_var.H>
+//**Lab3
+#include "New_var.H"
 
 /*------------------------------------------------------------------------
  *  clkint  --  clock service routine
