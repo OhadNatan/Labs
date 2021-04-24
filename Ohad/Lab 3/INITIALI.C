@@ -72,6 +72,7 @@ int	rdyhead,rdytail;	/* head/tail of ready list (q indexes)	*/
 int peffec[NPROC];
 int current_time[NPROC];
 int runnable_time[NPROC];
+
 #define	NULLNM	"**NULL**"	/* null process name			*/
 
 /************************************************************************/
