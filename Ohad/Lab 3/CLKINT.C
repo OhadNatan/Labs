@@ -4,6 +4,7 @@
 #include <kernel.h>
 #include <sleep.h>
 #include <io.h>
+#include <New_var.H>
 
 /*------------------------------------------------------------------------
  *  clkint  --  clock service routine
@@ -15,9 +16,16 @@ int mdevno;				/* minor device number		*/
 {
 	int	i;
         int resched_flag;
-
+        int pid;
         
 	tod++;
+
+        pid=getpid();
+        pptr = &proctab[pid];
+        if (pptr->pprio != 100 && pptr->pprio != 0){
+                
+        }
+
 
         resched_flag = 0;
 	if (slnempty)

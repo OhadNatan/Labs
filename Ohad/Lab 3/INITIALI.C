@@ -12,7 +12,6 @@
 #include <butler.h>
 #include <bios.h>
 #include <kbdio.h>
-#include <New_var.H>
 
 #ifdef	Ntty
 #include <tty.h>
