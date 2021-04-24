@@ -34,14 +34,16 @@ int mdevno;				/* minor device number		*/
 
         current_time[currpid]++; /*current_time update*/
 
-        pptr = &proctab[currpid];
-        pptr->pprio = 1 + (peffec[currpid] * (runnable_time[currpid] - current_time[currpid])) / runnable_time[currpid];
+        if (currpid > 3 && runnable_time[currpid]!=0){
+                pptr = &proctab[currpid];
+                pptr->pprio = 1 + (((peffec[currpid] * (runnable_time[currpid]) - current_time[currpid])) / runnable_time[currpid]);
+        }
 
         pid_to_check = q[rdyhead].qnext;
 
         while (pid_to_check != -1)
         {
-                if (pid_to_check > 3 && pid_to_check < 30){
+                if (pid_to_check > 3){
                         pptr = &proctab[pid_to_check];
                         pptr->pprio = 1 + (peffec[pid_to_check] * (runnable_time[pid_to_check] - current_time[pid_to_check]) / runnable_time[pid_to_check]);
                 }
