@@ -12,6 +12,7 @@
 #include <butler.h>
 #include <bios.h>
 #include <kbdio.h>
+#include <New_var.H>
 
 #ifdef	Ntty
 #include <tty.h>
@@ -67,7 +68,10 @@ int	preempt;		/* preemption counter.	Current process */
 
 int	butlerpid;		/* pid of butler process		*/
 int	rdyhead,rdytail;	/* head/tail of ready list (q indexes)	*/
-
+//** Lab 3
+int peffec[NPROC];
+int current_time[NPROC];
+int runnable_time[NPROC];
 #define	NULLNM	"**NULL**"	/* null process name			*/
 
 /************************************************************************/
