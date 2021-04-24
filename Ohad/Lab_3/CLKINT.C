@@ -5,6 +5,7 @@
 #include <sleep.h>
 #include <io.h>
 #include <q.h>
+#include <proc.h>
 //**Lab3
 #include "New_var.H"
 
@@ -34,7 +35,7 @@ int mdevno;				/* minor device number		*/
         current_time[currpid]++; /*current_time update*/
 
         pptr = &proctab[currpid];
-        pptr->pprio = 1 + (peffec[currpid] * (runnable_time[currpid] - current_time[currpid])) / runnable[currpid];
+        pptr->pprio = 1 + (peffec[currpid] * (runnable_time[currpid] - current_time[currpid])) / runnable_time[currpid];
 
         pid_to_check = q[rdyhead].qnext;
 
@@ -42,7 +43,7 @@ int mdevno;				/* minor device number		*/
         {
                 if (pid_to_check > 3 && pid_to_check < 30){
                         pptr = &proctab[pid_to_check];
-                        pptr->pprio = 1 + (peffec[pid_to_check] * (runnable_time[pid_to_check] - current_time[pid_to_check]) / runnable[currpid_to_checkpid])
+                        pptr->pprio = 1 + (peffec[pid_to_check] * (runnable_time[pid_to_check] - current_time[pid_to_check]) / runnable_time[pid_to_check]);
                 }
                 pid_to_check = q[pid_to_check].qnext;
         }/* pprio update*/

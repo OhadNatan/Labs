@@ -4,6 +4,7 @@
 #include <kernel.h>
 #include <proc.h>
 #include <mem.h>
+#include "New_var.H"
 
 #define	INITF	0x0200	/* initial flag register - set interrupt flag,	*/
 			/* clear direction and trap flags		*/
