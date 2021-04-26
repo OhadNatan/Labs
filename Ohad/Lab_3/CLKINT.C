@@ -26,38 +26,25 @@ int mdevno;				/* minor device number		*/
 	tod++;
 
         pid_to_check = q[rdyhead].qnext;
+
         while (pid_to_check != -1)
         {
-                // printf("\nchecking %d pid int ready queue\n",pid_to_check);
-                runnable_time[pid_to_check]++;
+                runnable_time[pid_to_check] += 1;
                 pid_to_check = q[pid_to_check].qnext;
         }/* runnable_time update*/
 
+        current_time[currpid] += 1; /*current_time update*/
 
+        peffec[currpid] = get_new_prio(currpid);
 
-        if (currpid > 3 && runnable_time[currpid]!=0){
-                pptr = &proctab[currpid];
-                new_prio = 1 + peffec[currpid] * ((runnable_time[currpid] - current_time[currpid]) / runnable_time[currpid]);
-                if (new_prio > 1 && new_prio < 100 )
-                                pptr->pprio = new_prio;
-                else
-                                pptr->pprio = 1;
-        }
-
-        current_time[currpid]++; /*current_time update*/
+        // pptr = &proctab[currpid];
+        // pptr->pprio = get_new_prio(currpid);
 
         pid_to_check = q[rdyhead].qnext;
 
         while (pid_to_check != -1)
         {
-                if (pid_to_check > 3){
-                        pptr = &proctab[pid_to_check];
-                        new_prio = 1 + peffec[pid_to_check] * ((runnable_time[pid_to_check] - current_time[pid_to_check]) / runnable_time[pid_to_check]);
-                        if (new_prio > 1 && new_prio < 100 )
-                                pptr->pprio = new_prio;
-                        else
-                                pptr->pprio = 1;
-                }
+                peffec[pid_to_check] = get_new_prio(pid_to_check);
                 pid_to_check = q[pid_to_check].qnext;
         }/* pprio update*/
 
