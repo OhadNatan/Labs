@@ -17,6 +17,7 @@ xmain()
     resume( create(Inc, INITSTK, INITPRIO+5, "proc 3", 1, &count3) );
     resume( create(Inc, INITSTK, INITPRIO, "proc 4", 1, &count4) );
     resume( create(Pr, INITSTK, INITPRIO + 100, "proc 6", 0) );
+    return 0;
 }
 
 /*------------------------------------------------------------------------
