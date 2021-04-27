@@ -48,7 +48,6 @@ int mdevno;				/* minor device number		*/
                 pid_to_check = q[pid_to_check].qnext;
         }/* pprio update*/
 
-
         resched_flag = 0;
 	if (slnempty)
 		if ( (--*sltop) <= 0 )
