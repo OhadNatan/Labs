@@ -23,3 +23,20 @@ int calcPrio(int pid)
     return prio;
 
 }
+
+int findMaxPrio()
+{
+    int MaxPrioPid,pidCurr,maxPrio=0;
+    pidCurr = q[rsyhead].qnext;
+    max = q[rsyhead].qkey;
+    while(pid!=-1)
+    {
+      if (pid < 4)
+        continue;
+      if (q[pid].qkey>max){
+        max = q[pid].qkey;
+        // MaxPrioPid = pidCurr;
+      }
+      pid = q[pid].qnext;
+    }
+}
