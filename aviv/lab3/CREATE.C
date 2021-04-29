@@ -47,10 +47,10 @@ int args;			/* arguments (treated like an array)	*/
 	pptr->pname[PNMLEN]='\0';
 	pptr->pprio = priority;
 	/*-----------------------------------------------------lab3-change--------------------------------------------------------------------------------------------------*/
-	prio[pid]=priority;
-	peffec[pid] = calcPrio(currpid);
-	runnable_time[pid]=0;
-	current_time[pid]=0;
+	pprio[pid]=priority;
+	peffec[pid] = priority;
+	runnable_time[pid]= 0;
+	current_time[pid]= 0;
 	/*-----------------------------------------------------lab3-change--------------------------------------------------------------------------------------------------*/
 	pptr->phasmsg = 0;		/* no message			*/
 	pptr->pbase = saddr;

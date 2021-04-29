@@ -70,10 +70,10 @@ int	butlerpid;		/* pid of butler process		*/
 int	rdyhead,rdytail;	/* head/tail of ready list (q indexes)	*/
 
 /*-----------------------------------------------------lab3-change--------------------------------------------------------------------------------------------------*/
-int prio[nproc];
-int peffec[nproc];
-int runnable_time[nproc];
-int current_time[nproc];
+int pprio[NPROC];
+int peffec[NPROC];
+int runnable_time[NPROC];
+int current_time[NPROC];
 /*-----------------------------------------------------lab3-change--------------------------------------------------------------------------------------------------*/
 #define	NULLNM	"**NULL**"	/* null process name			*/
 

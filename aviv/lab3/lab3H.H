@@ -1,6 +1,8 @@
-extern int pprio[nproc];
-extern int peffec[nproc];
-extern int runnable_time[nproc];
-extern int current_time[nproc];
+
+
+extern int pprio[];
+extern int peffec[];
+extern int runnable_time[];
+extern int current_time[];
 
 

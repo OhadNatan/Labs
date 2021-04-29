@@ -4,6 +4,16 @@
 #include <kernel.h>
 #include <sleep.h>
 #include <io.h>
+#include <dos.h>
+#include <proc.h>
+#include <sem.h>
+#include <mem.h>
+#include <q.h>
+#include <mark.h>
+#include <butler.h>
+#include <bios.h>
+#include <kbdio.h>
+
 #include "lab3H.h"
 
 /*------------------------------------------------------------------------
@@ -31,7 +41,7 @@ int mdevno;				/* minor device number		*/
         {
                 if (q[tempHead].qkey>q[max].qkey) max = tempHead;
                 runnable_time[tempHead]++;
-                peffec[tempHead] = calcPrio[tempHead];
+                peffec[tempHead] = calcPrio(tempHead);
                 tempHead = q[tempHead].qnext;
         }
         // q[rdytail].qprev= max; TODO

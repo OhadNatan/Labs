@@ -1,5 +1,9 @@
 #include "lab3H.h"
 #include <butler.h>
+#include <conf.h>
+#include <kernel.h>
+#include <proc.h>
+#include <q.h>
 
 
 int calcPrio(int pid)
@@ -24,19 +28,32 @@ int calcPrio(int pid)
 
 }
 
-int findMaxPrio()
+int findMaxPrio() // return the max prio from the proc`s in the ready Q
 {
     int MaxPrioPid,pidCurr,maxPrio=0;
-    pidCurr = q[rsyhead].qnext;
-    max = q[rsyhead].qkey;
-    while(pid!=-1)
+    pidCurr = q[rdyhead].qnext;
+    maxPrio = q[pidCurr].qkey;
+    while(q[pidCurr].qnext!=-1)
     {
-      if (pid < 4)
-        continue;
-      if (q[pid].qkey>max){
-        max = q[pid].qkey;
-        // MaxPrioPid = pidCurr;
-      }
-      pid = q[pid].qnext;
+      if (q[pidCurr].qkey>maxPrio)  maxPrio = q[pidCurr].qkey;
+      
+      pidCurr = q[pidCurr].qnext;
     }
+    return maxPrio;
+}
+
+int findMaxPrioPid() // return the pid of the proc with the max prio
+{
+    int MaxPrioPid,pidCurr,maxPrio=0;
+    pidCurr = q[rdyhead].qnext;
+    maxPrio = q[pidCurr].qkey;
+    while(q[pidCurr].qnext!=-1) 
+    {
+      if (q[pidCurr].qkey > maxPrio){
+        maxPrio = q[pidCurr].qkey;
+        MaxPrioPid = pidCurr;
+      }
+      pidCurr = q[pidCurr].qnext;
+    }
+    return MaxPrioPid;
 }
