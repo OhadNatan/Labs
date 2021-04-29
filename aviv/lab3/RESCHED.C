@@ -24,12 +24,12 @@ int	resched()
          {
 		/* no switch needed if current prio. higher than next	*/
 		/* or if rescheduling is disabled ( pcxflag == 0 )	*/
-		if ( sys_pcxget() == 0 || lastkey(rdytail) < optr->pprio
-                 || ( (lastkey(rdytail) == optr->pprio) && (preempt > 0) ) )
+		if ( sys_pcxget() == 0 || findMaxPrio() < peffec[currpid]
+                 || ( (findMaxPrio() == peffec[currpid]) && (preempt > 0) ) )
 			return;
 		/* force context switch */
 		optr->pstate = PRREADY;
-		insert(currpid,rdyhead,optr->pprio);
+		insert(currpid,rdyhead,peffec[currpid]);
 	} /* if */ 
         else if ( sys_pcxget() == 0 ) 
             {
@@ -40,7 +40,7 @@ int	resched()
 
 	/* remove highest priority process at end of ready list */
 
-	nptr = &proctab[ (currpid = getlast(rdytail)) ];
+	nptr = &proctab[ (currpid = findMaxPrioPid()) ];
 	nptr->pstate = PRCURR;		/* mark it currently running	*/
 	preempt = QUANTUM;		/* reset preemption counter	*/
 	ctxsw(&optr->pregs,&nptr->pregs);
