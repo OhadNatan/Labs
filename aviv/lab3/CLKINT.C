@@ -25,13 +25,25 @@ int mdevno;				/* minor device number		*/
         tempHead = q[rdyhead].qnext;
 
         //loop on the ready Q and inc the runnable time of each proc
-        while(q[tempHead].qnext != -1)
-        {
+        while (q[tempHead].qkey < MAXINT){
                 runnable_time[tempHead]++;
                 peffec[tempHead] = calcPrio(tempHead);
                 q[tempHead].qkey = peffec[tempHead];
                 tempHead = q[tempHead].qnext;
         }
+
+        // if (tod%70 == 0 && currpid!=3){
+        //         int i;
+        //         for(i=0 ; i<30 ; i++){
+        //                 if(runnable_time[i]!=0){
+        //                         kprintf("runnable_time: pid %d value %d\n", i, runnable_time[i]);
+        //                 }
+        //                 if(current_time[i]!=0){
+        //                         kprintf("current_time: pid %d value %d\n", i, current_time[i]);
+        //                 }
+        //         }
+        // }
+
         resched_flag = 0;
 	if (slnempty)
 		if ( (--*sltop) <= 0 )

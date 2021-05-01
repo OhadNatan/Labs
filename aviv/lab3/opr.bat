@@ -18,4 +18,7 @@ tlib  xinu.lib -+ RESCHED.obj
 tcc -I..\..\.. -c -DTURBOC getitem.C
 tlib xinu.lib -+ getitem.obj
 
+tcc -I..\..\.. -c -DTURBOC CHPRIO.C
+tlib  xinu.lib -+ CHPRIO.OBJ
+
 tcc -I..\..\.. lab3.c xinu.lib
