@@ -1,12 +1,12 @@
-#include "lab3H.h"
+
 #include <butler.h>
 #include <conf.h>
 #include <kernel.h>
 #include <proc.h>
 #include <q.h>
+#include "lab3H.h"
 
-
-int calcPrio(int pid)
+int calcPrio(int pid)//calc the effec prio
 {
     int prio;
 
@@ -30,23 +30,24 @@ int calcPrio(int pid)
 
 int findMaxPrio() // return the max prio from the proc`s in the ready Q
 {
-    int MaxPrioPid,pidCurr,maxPrio=0;
+    int pidCurr,maxPrio=0;
     pidCurr = q[rdyhead].qnext;
     maxPrio = q[pidCurr].qkey;
     while(q[pidCurr].qnext!=-1)
     {
-      if (q[pidCurr].qkey>maxPrio)  maxPrio = q[pidCurr].qkey;
-      
+      if (q[pidCurr].qkey > maxPrio)  maxPrio = q[pidCurr].qkey;
       pidCurr = q[pidCurr].qnext;
     }
     return maxPrio;
 }
 
-int findMaxPrioPid() // return the pid of the proc with the max prio
+int findMaxPrioPid() // return the pid of the proc with the max prio in the ready Q
 {
     int MaxPrioPid,pidCurr,maxPrio=0;
     pidCurr = q[rdyhead].qnext;
     maxPrio = q[pidCurr].qkey;
+    if(q[pidCurr].qnext == -1)
+      return pidCurr;
     while(q[pidCurr].qnext!=-1) 
     {
       if (q[pidCurr].qkey > maxPrio){

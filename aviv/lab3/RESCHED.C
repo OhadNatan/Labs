@@ -40,7 +40,7 @@ int	resched()
 
 	/* remove highest priority process at end of ready list */
 
-	nptr = &proctab[ (currpid = findMaxPrioPid()) ];
+	nptr = &proctab[ (currpid = getlast(rdytail)) ];
 	nptr->pstate = PRCURR;		/* mark it currently running	*/
 	preempt = QUANTUM;		/* reset preemption counter	*/
 	ctxsw(&optr->pregs,&nptr->pregs);

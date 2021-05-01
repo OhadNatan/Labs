@@ -3,7 +3,9 @@
 #include <conf.h>
 #include <kernel.h>
 #include <q.h>
-
+#include <butler.h>
+#include <proc.h>
+#include "lab3H.h"
 /*------------------------------------------------------------------------
  *  getfirst  --  remove and return the first process on a list
  *------------------------------------------------------------------------
