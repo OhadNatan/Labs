@@ -30,11 +30,11 @@
 struct	pentry {
 	char	pstate;			/* process state: PRCURR, etc.	*/
 	int	pprio;			/* process priority		*/
-	//Edit Vlad
+	//------------------------------------Edit Vlad-----------------------------------------
 	int	peffect;        /*new Effective priority */
 	int runnable_time;  /*time of been in state "want to run" */
 	int current_time;   /*time of been in state "Actual runner" */
-	//
+	//-----------------------------------End Edit Vlad--------------------------------------
 	int	psem;			/* semaphore if process waiting	*/
 	int	pmsg;			/* message sent to this process	*/
 	int	phasmsg;		/* nonzero iff pmsg is valid	*/

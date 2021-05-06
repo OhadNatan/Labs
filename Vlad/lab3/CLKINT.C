@@ -18,6 +18,17 @@ int mdevno;				/* minor device number		*/
 
 
     tod++;
+    //------------------------------------Edit Vlad-----------------------------------------
+    for (i = 4; i < NPROC; i++) {
+        if (proctab[i]->pstate == PRREADY)
+            proctab[i]->runnable_time++;
+        if (proctab[i]->pstate == PRCURR)
+            proctab[i]->current_time++;
+        proctab[i]->peffec =
+            1 + (proctab[i]->pprio * (proctab[i]->runnable_time - proctab[i]->current_time)) / proctab[i]->runnable_time;
+
+    }
+    //-----------------------------------End Edit Vlad--------------------------------------
 
     resched_flag = 0;
     if (slnempty)
