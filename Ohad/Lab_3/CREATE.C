@@ -46,7 +46,9 @@ int args;			/* arguments (treated like an array)	*/
 		pptr->pname[i] = (*namep ? *namep++ : ' ');
 	pptr->pname[PNMLEN]='\0';
 	pptr->pprio = priority;
+	/*------------------------------------------------------------------------------------ lab3 ----------------------------------------------------------------------------------------*/
 	peffec[pid] = priority; /* new for lab 3 - initilize the original priority */
+	/*------------------------------------------------------------------------------------ lab3 ----------------------------------------------------------------------------------------*/
 	pptr->phasmsg = 0;		/* no message			*/
 	pptr->pbase = saddr;
 	pptr->plen = ssize;
