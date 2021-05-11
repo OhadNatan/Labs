@@ -10,6 +10,7 @@
 #include <bios.h>
 #include <kbdio.h>
 
+
 #define INITF 0x0200
 
 extern int INITRET();
@@ -26,6 +27,7 @@ int ip1;
       }
   return ip1;
 }
+
 
 //1. update the preempt to 0 (the father have no time left in the cpu)(best so far)
 //2. update the pprio of son procces to be +1 from father(not idial)
