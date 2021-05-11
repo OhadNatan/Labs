@@ -13,7 +13,6 @@
 #include <bios.h>
 #include <kbdio.h>
 #include "lab3H.h"
-
 #ifdef	Ntty
 #include <tty.h>
 int	winofcur;		/* define the current input window	*/
@@ -70,11 +69,12 @@ int	butlerpid;		/* pid of butler process		*/
 int	rdyhead,rdytail;	/* head/tail of ready list (q indexes)	*/
 
 /*-----------------------------------------------------lab3-change--------------------------------------------------------------------------------------------------*/
-int pprio[NPROC];
-int peffec[NPROC];
-int runnable_time[NPROC];
-int current_time[NPROC];
+int pprio[30];
+int peffec[30];
+int runnable_time[30];
+int current_time[30];
 /*-----------------------------------------------------lab3-change--------------------------------------------------------------------------------------------------*/
+
 #define	NULLNM	"**NULL**"	/* null process name			*/
 
 /************************************************************************/

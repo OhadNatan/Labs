@@ -23,12 +23,21 @@ int	resched()
 	{
 		/* no switch needed if current prio. higher than next	*/
 		/* or if rescheduling is disabled ( pcxflag == 0 )	*/
-		if (sys_pcxget() == 0 || lastkey(rdytail) < optr->pprio
-			|| ((lastkey(rdytail) == optr->pprio) && (preempt > 0)))
+		//------------------------------------Edit Vlad-----------------------------------------
+		if (sys_pcxget() == 0 || lastkey(rdytail) < optr->peffect
+			|| ((lastkey(rdytail) == optr->peffect) && (preempt > 0)))
 			return;
 		/* force context switch */
 		optr->pstate = PRREADY;
-		insert(currpid, rdyhead, optr->pprio);
+		insert(currpid, rdyhead, optr->peffect);
+		//Original 
+		//if (sys_pcxget() == 0 || lastkey(rdytail) < optr->pprio
+		//	|| ((lastkey(rdytail) == optr->pprio) && (preempt > 0)))
+		//	return;
+		///* force context switch */
+		//optr->pstate = PRREADY;
+		//insert(currpid, rdyhead, optr->pprio);
+		//-----------------------------------End Edit Vlad--------------------------------------
 	} /* if */
 	else if (sys_pcxget() == 0)
 	{

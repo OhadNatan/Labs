@@ -45,9 +45,11 @@ int args;			/* arguments (treated like an array)	*/
 		pptr->pname[i] = (*namep ? *namep++ : ' ');
 	pptr->pname[PNMLEN] = '\0';
 	pptr->pprio = priority;
-	//Edit Vlad
+	//------------------------------------Edit Vlad-----------------------------------------
 	pptr->peffect  = priority;
-	//
+	pptr->runnable_time = 0;
+	pptr->current_time = 0;
+	//-----------------------------------End Edit Vlad--------------------------------------
 	pptr->phasmsg = 0;		/* no message			*/
 	pptr->pbase = saddr;
 	pptr->plen = ssize;
