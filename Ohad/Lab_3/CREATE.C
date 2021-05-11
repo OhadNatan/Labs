@@ -4,6 +4,7 @@
 #include <kernel.h>
 #include <proc.h>
 #include <mem.h>
+#include "New_var.H"
 
 #define	INITF	0x0200	/* initial flag register - set interrupt flag,	*/
 			/* clear direction and trap flags		*/
@@ -45,7 +46,9 @@ int args;			/* arguments (treated like an array)	*/
 		pptr->pname[i] = (*namep ? *namep++ : ' ');
 	pptr->pname[PNMLEN]='\0';
 	pptr->pprio = priority;
+	/*------------------------------------------------------------------------------------ lab3 ----------------------------------------------------------------------------------------*/
 	peffec[pid] = priority; /* new for lab 3 - initilize the original priority */
+	/*------------------------------------------------------------------------------------ lab3 ----------------------------------------------------------------------------------------*/
 	pptr->phasmsg = 0;		/* no message			*/
 	pptr->pbase = saddr;
 	pptr->plen = ssize;

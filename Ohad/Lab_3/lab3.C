@@ -1,3 +1,10 @@
+#include <conf.h>
+#include <kernel.h>
+#include <sleep.h>
+#include <io.h>
+#include <q.h>
+#include <proc.h>
+
 unsigned long int count1 = 0, count2 = 0, count3 = 0, count4 = 0;
 
 xmain()
@@ -10,6 +17,7 @@ xmain()
     resume( create(Inc, INITSTK, INITPRIO+5, "proc 3", 1, &count3) );
     resume( create(Inc, INITSTK, INITPRIO, "proc 4", 1, &count4) );
     resume( create(Pr, INITSTK, INITPRIO + 100, "proc 6", 0) );
+    return 0;
 }
 
 /*------------------------------------------------------------------------

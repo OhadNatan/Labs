@@ -67,10 +67,14 @@ int	preempt;		/* preemption counter.	Current process */
 
 int	butlerpid;		/* pid of butler process		*/
 int	rdyhead,rdytail;	/* head/tail of ready list (q indexes)	*/
-//** Lab 3
+
+
+/*-------------------------------------------------------------------------------------- Lab 3 ----------------------------------------------------------------------------------------*/
 int peffec[NPROC];
 int current_time[NPROC] = {0};
 int runnable_time[NPROC] = {0};
+/*-------------------------------------------------------------------------------------- lab3 -----------------------------------------------------------------------------------------*/
+
 
 #define	NULLNM	"**NULL**"	/* null process name			*/
 
