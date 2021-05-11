@@ -12,6 +12,7 @@
 #include <butler.h>
 #include <bios.h>
 #include <kbdio.h>
+#include "QueMem.h"
 
 #ifdef	Ntty
 #include <tty.h>
@@ -75,6 +76,8 @@ int sonsCounter[30] = {0};
 int xwaitFlag[30] = {0};
 int xwaitAllFlag[30] = {0};
 
+qmemEntry memQ[50];
+memQ[0].next = NULL;
 
 #define	NULLNM	"**NULL**"	/* null process name			*/
 
