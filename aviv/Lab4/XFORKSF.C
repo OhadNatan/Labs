@@ -30,11 +30,6 @@ int ip1;
   return ip1;
 }
 
-/* xfork - xinu emulation of unix fork, will work
-   only in the process main program, and pointers should not be used -
-   pointers in the child process will point into the parent variable
-   space */
-
 int xforksonfirst()
 {
 char *saddr;
@@ -114,6 +109,7 @@ if (currpid != pid) /* parent process only */
              pop ax
             }
         *sp4 = ( ((int)pptr1->pbase) + (( bp1 -((int)pptr->pbase)) ));
+        /*------------------------change lab 4 --------------------------------------------------*/
     optr=pptr;
     nptr=pptr1;
     optr->pstate = PRREADY;
@@ -127,7 +123,7 @@ if (currpid != pid) /* parent process only */
    } /* if */
  else
   return 0;   /* child process only */
-
-} /* xfork */
+  /*------------------------change lab 4 --------------------------------------------------*/
+} /* xforksf */
 
 
