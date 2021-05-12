@@ -12,6 +12,7 @@
 #include <butler.h>
 #include <bios.h>
 #include <kbdio.h>
+#include "newQ.h"
 
 #ifdef	Ntty
 #include <tty.h>
@@ -75,6 +76,12 @@ int sonsCounter[30] = {0};
 int xwaitFlag[30] = {0};
 int xwaitAllFlag[30] = {0};
 
+int timer = 0;
+
+int headNewQ = 0;  
+int counterInQ = 0; 
+qnode newQ[50] ; 
+int newQfree[50]= {0};
 
 #define	NULLNM	"**NULL**"	/* null process name			*/
 

@@ -12,5 +12,12 @@
 
 @REM tcc -I..\..\.. -c -DTURBOC XWAIT.C
 @REM tlib  xinu.lib -+ XWAIT.obj
+tcc -I..\..\.. -c -DTURBOC funcQ.C
+tlib  xinu.lib -+ funcQ.obj
 
-tcc -I..\..\.. lab4.c xinu.lib
+@REM tcc -I..\..\.. -c -DTURBOC clkint.C
+@REM tlib  xinu.lib -+ clkint.obj
+
+
+
+@REM tcc -I..\..\.. lab4.c xinu.lib
