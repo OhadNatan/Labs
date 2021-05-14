@@ -2,7 +2,7 @@ typedef struct qnode{
 int secs; //time to be allocated
 int next; //next in the list
 int size; // size of allocation memory
-char* mptr; //pointer to the memory
+char** mptr; //pointer to the memory
 }qnode;
 
 extern int timer;

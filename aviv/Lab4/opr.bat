@@ -20,4 +20,4 @@ tlib  xinu.lib -+ funcQ.obj
 
 
 
-@REM tcc -I..\..\.. lab4.c xinu.lib
+tcc -I..\..\.. lab4.c xinu.lib
