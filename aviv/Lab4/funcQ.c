@@ -1,6 +1,7 @@
 #include "newQ.h"
 #include <conf.h>
 #include <kernel.h>
+#include <mem.h>
 
 SYSCALL insertNewQ(int nbytes, int sec, char **ptr)
 { //insert to the newQ a new temp mem block
@@ -93,5 +94,19 @@ SYSCALL getmemForTime(int nbytes, int secs, void **ptr)
         kprintf("no free memory to allocate");
         return (SYSERR);
     }
+    return (OK);
+}
+
+SYSCALL freep(char* pblock){
+    word nbytesToDel;
+    struct	mblock	*p, *q;
+    for ( q=&memlist, p=q->mnext ; (char *)p < pblock && (char *)p != NULL ; q=p, p=p->mnext );
+    if((char *)p > pblock)
+        nbytesToDel = (word)((char *)p - (char *)pblock); 
+    else{
+        kprintf("\n***Error***\n");
+        return (SYSERR);
+    }
+    freemem(pblock, nbytesToDel);
     return (OK);
 }

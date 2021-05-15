@@ -1,0 +1,48 @@
+/* getmem.c - getmem */
+
+#include <conf.h>
+#include <kernel.h>
+#include <mem.h>
+
+/*------------------------------------------------------------------------
+ *  getmem  --  allocate heap storage, returning lowest integer address
+ *------------------------------------------------------------------------
+ */
+char *getmem(nbytes)
+word nbytes;
+{
+	int	ps;
+	word newNB;
+	struct	mblock	*p, *q, *leftover,*n;
+
+	disable(ps);
+	if ( nbytes==0 ) {
+		restore(ps);
+		return( NULL );
+	}
+	nbytes = roundew(nbytes);
+	newNB= nbytes + 4;
+	for ( q=&memlist, p=q->mnext ;
+		(char *)p != NULL ;
+		q=p, p=p->mnext )
+		if ( p->mlen == nbytes+8) {
+			n=(struct mblock *)((char *)p+4);
+			p->mlen = 4;
+			((struct mblock *)((char *)p+4+nbytes))->mnext = p->mnext;
+			((struct mblock *)((char *)p+4+nbytes))->mlen = 4;
+			p->mnext = ((struct mblock *)((char *)p+4+nbytes));
+			restore(ps);
+			return( (char *) n );
+		} else if ( p->mlen > nbytes+8 ) {
+			leftover = (struct mblock *)( (char *)p + nbytes + 4);
+			n=(struct mblock *)((char *)p+4);
+			leftover->mlen = p->mlen - nbytes - 4;
+			leftover->mnext = p->mnext;
+			p->mlen = 4;
+			p->mnext = leftover;
+			restore(ps);
+			return( (char *) n );
+		}
+	restore(ps);
+	return( NULL );
+}
