@@ -67,7 +67,16 @@ extern int firstsonpid(int pid);
 //for wait
 extern SYSCALL xwait();
 extern SYSCALL xwaitall();
+
+//for mem
+#define MAXMEMTIME 50
+#define CLOKTICKSINSEC 18
+extern SYSCALL getmemfortime(int nbytes, int secs, void** ptr);
+extern int inserttimemem(int nbytes, int secs, void** ptr);
+extern int getnextfree(int number);
+extern int getnextused(int number);
 //
+
 
 /* process management variables */
 

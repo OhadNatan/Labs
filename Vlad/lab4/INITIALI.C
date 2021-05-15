@@ -14,6 +14,7 @@
 #include <kbdio.h>
 //Edit Vlad
 #include "SONG.H"
+#include "GETMEMFT.H"
 //
 
 #ifdef	Ntty
@@ -73,6 +74,11 @@ int	rdyhead, rdytail;	/* head/tail of ready list (q indexes)	*/
 
 //Edit Vlad
 struct sons procson[NPROC];
+//for mem
+struct memfortime memtime[MAXMEMTIME];
+int quantitymemtime = 0;
+int freeused[MAXMEMTIME] = { 0 };
+
 //
 
 
