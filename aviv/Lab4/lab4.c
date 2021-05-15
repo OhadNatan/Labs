@@ -56,10 +56,10 @@ xmain()
 
     sleep(6);
 
-    if (iptr == NULL)  
+    if (iptr == NULL)
         printf("\nGood\n");
     else
-        printf("\nSagi gay\n");
+        printf("\nError\n");
 
     printf("\nind 0 - %d\nind 1 - %d\n", iptr[0], iptr[1]);
 
@@ -68,12 +68,9 @@ xmain()
     if (iptr2 == NULL)
         printf("\nGood2\n");
     else
-        printf("\nSagi gay 2\n");
+        printf("\nError 2\n");
 
     printf("\nind2 0 - %d\nind2 1 - %d\n", iptr2[0], iptr2[1]);
-
-    
-
 
     return;
 }
