@@ -25,7 +25,7 @@ word nbytes;
 	for ( q=&memlist, p=q->mnext ;
 		(char *)p != NULL ;
 		q=p, p=p->mnext )
-		if ( p->mlen == nbytes+8) {
+		if ( p->mlen == nbytes+8) { //pedding with 2 * block at size 4
 			n=(struct mblock *)((char *)p+4);
 			p->mlen = 4;
 			((struct mblock *)((char *)p+4+nbytes))->mnext = p->mnext;
@@ -33,7 +33,7 @@ word nbytes;
 			p->mnext = ((struct mblock *)((char *)p+4+nbytes));
 			restore(ps);
 			return( (char *) n );
-		} else if ( p->mlen > nbytes+8 ) {
+		} else if ( p->mlen > nbytes+8 ) { //pedding with one block at size 4
 			leftover = (struct mblock *)( (char *)p + nbytes + 4);
 			n=(struct mblock *)((char *)p+4);
 			leftover->mlen = p->mlen - nbytes - 4;
