@@ -20,15 +20,15 @@ int mdevno;				/* minor device number		*/
 	tod++;
         
         resched_flag = 0;
-          /*------------------------change lab 4 task4 --------------------------------------------------*/
+        // lab 4 change 
         counter++;
-        if (counterOfProc>0){
+        if (counterOfProc>0){ 
                 if (sleepQueue[sleepHead].secs<=0)
                         deleteFromQ();
                 if(timer%18==0)
                         sleepQueue[sleepHead].secs--;
         }
-          /*------------------------change lab 4 task 4--------------------------------------------------*/
+        
 	if (slnempty)
 		if ( (--*sltop) <= 0 )
                      {

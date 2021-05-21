@@ -37,7 +37,7 @@ int *sp1, *sp2, *sp3, *sp4;
 int ps, bp1;
 int dummy;
 int pid;
-struct pentry *nptr, *optr;
+
 struct pentry *pptr, *pptr1;
 int ip1;
 
@@ -109,21 +109,24 @@ if (currpid != pid) /* parent process only */
              pop ax
             }
         *sp4 = ( ((int)pptr1->pbase) + (( bp1 -((int)pptr->pbase)) ));
-        /*------------------------change lab 4 --------------------------------------------------*/
-    optr=pptr;
+    // lab 4 change
+    // same like resched 
+    // get the proc`s ready to ctxsw
+    struct pentry *nptr, *optr;
+    optr=pptr;  
     nptr=pptr1;
-    optr->pstate = PRREADY; // change status
-		insert(currpid,rdyhead,optr->pprio); //insert to ready Q
+    optr->pstate = PRREADY;
+		insert(currpid,rdyhead,optr->pprio); //enter the father to ready queue
     currpid = pid;
-    nptr->pstate = PRCURR;//change status before run
-    preempt = QUANTUM;		// set the preempt to quantum
-    ctxsw(&optr->pregs,&nptr->pregs); //contect switch
+    nptr->pstate = PRCURR;		/* mark it currently running	*/
+    preempt = QUANTUM;		/* reset preemption counter	*/
+    ctxsw(&optr->pregs,&nptr->pregs);
     restore(ps);
-    return pid;  //return the running pid
+    return pid;  
    } /* if */
  else
  return 0;   /* child process only */
-  /*------------------------change lab 4 --------------------------------------------------*/
+  
 } /* xforksf */
 
 
