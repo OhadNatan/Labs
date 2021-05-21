@@ -24,7 +24,7 @@ int mdevno;				/* minor device number		*/
         counter++;
         if (counterOfProc>0){ 
                 if (sleepQueue[sleepHead].secs<=0)
-                        deleteFromQ();
+                        deleteMemFromQueue();
                 if(timer%18==0)
                         sleepQueue[sleepHead].secs--;
         }
