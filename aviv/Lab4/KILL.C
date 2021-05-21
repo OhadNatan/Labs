@@ -30,7 +30,7 @@ SYSCALL kill(pid)
 	if (--numproc == 0)
 		xdone();
 
-		//Lab4 changes
+		//----------------------Lab4 changes------------------------------------------------------------
 	Fpid = fatherPids[pid];
 	sonsCounter[Fpid]--; //update total num of son of the father process
 	if(firstSons[Fpid] == pid){ //check if the pid is first son of process
@@ -47,7 +47,7 @@ SYSCALL kill(pid)
 		}
 	}
 
-
+	//----------------------Lab4 changes------------------------------------------------------------
 	freestk(pptr->pbase, pptr->plen);
 
 	pstate = pptr->pstate;

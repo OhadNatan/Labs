@@ -122,7 +122,7 @@ if (currpid != pid) /* parent process only */
     return pid;  
    } /* if */
  else
-  return 0;   /* child process only */
+ return 0;   /* child process only */
   /*------------------------change lab 4 --------------------------------------------------*/
 } /* xforksf */
 

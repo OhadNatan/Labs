@@ -20,7 +20,7 @@ int mdevno;				/* minor device number		*/
 	tod++;
         
         resched_flag = 0;
-          /*------------------------change lab 4 --------------------------------------------------*/
+          /*------------------------change lab 4 task4 --------------------------------------------------*/
         timer++;
         if (counterInQ>0){
                 if (newQ[headNewQ].secs<=0)
@@ -28,7 +28,7 @@ int mdevno;				/* minor device number		*/
                 if(timer%18==0)
                         newQ[headNewQ].secs--;
         }
-          /*------------------------change lab 4 --------------------------------------------------*/
+          /*------------------------change lab 4 task 4--------------------------------------------------*/
 	if (slnempty)
 		if ( (--*sltop) <= 0 )
                      {

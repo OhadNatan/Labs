@@ -21,6 +21,7 @@ word nbytes;
 		return( NULL );
 	}
 	nbytes = roundew(nbytes);
+	//  -----------------------------------lab 4 task 5---------------------------------------------
 	newNB= nbytes + 4;
 	for ( q=&memlist, p=q->mnext ;
 		(char *)p != NULL ;
@@ -42,6 +43,7 @@ word nbytes;
 			p->mnext = leftover;
 			restore(ps);
 			return( (char *) n );
+	//  -----------------------------------lab 4 task 5---------------------------------------------
 		}
 	restore(ps);
 	return( NULL );

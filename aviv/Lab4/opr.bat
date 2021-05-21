@@ -4,8 +4,8 @@
 @REM tcc -I..\..\.. -c -DTURBOC XFORK.C
 @REM tlib  xinu.lib -+ XFORK.obj
 
-@REM @REM tcc -I..\..\.. -c -DTURBOC XFORKSF.C
-@REM @REM tlib  xinu.lib -+ XFORKSF.obj
+@REM tcc -I..\..\.. -c -DTURBOC XFORKSF.C
+@REM tlib  xinu.lib -+ XFORKSF.obj
 
 @REM tcc -I..\..\.. -c -DTURBOC KILL.C
 @REM tlib  xinu.lib -+ KILL.obj
@@ -14,11 +14,11 @@
 @REM tlib  xinu.lib -+ XWAIT.obj
 
 
-tcc -I..\..\.. -c -DTURBOC GETMEM.C
-tlib  xinu.lib -+ GETMEM.obj
+@REM tcc -I..\..\.. -c -DTURBOC GETMEM.C
+@REM tlib  xinu.lib -+ GETMEM.obj
 
-tcc -I..\..\.. -c -DTURBOC funcQ.C
-tlib  xinu.lib -+ funcQ.obj
+@REM tcc -I..\..\.. -c -DTURBOC funcQ.C
+@REM tlib  xinu.lib -+ funcQ.obj
 
 
 
@@ -27,4 +27,5 @@ tlib  xinu.lib -+ funcQ.obj
 
 
 
-tcc -I..\..\.. lab4.c xinu.lib
+@REM tcc -I..\..\.. lab4.c xinu.lib 
+

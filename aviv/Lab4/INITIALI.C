@@ -69,20 +69,18 @@ int	preempt;		/* preemption counter.	Current process */
 int	butlerpid;		/* pid of butler process		*/
 int	rdyhead,rdytail;	/* head/tail of ready list (q indexes)	*/
 
-//Lab 4 changes
+//Lab 4 changes---------------------------------------------------------------------------------------
 int firstSons[30] = {0};
 int fatherPids[30] = {0};
 int sonsCounter[30] = {0};
 int xwaitFlag[30] = {0};
 int xwaitAllFlag[30] = {0};
-
 int timer = 0;
-
 int headNewQ = 0;  
 int counterInQ = 0; 
 qnode newQ[50] ; 
 int newQfree[50]= {0};
-
+//Lab 4 changes---------------------------------------------------------------------------------------
 #define	NULLNM	"**NULL**"	/* null process name			*/
 
 /************************************************************************/
