@@ -4,7 +4,7 @@
 #include <kernel.h>
 #include <sleep.h>
 #include <io.h>
-#include "newQ.h"
+#include "sleepQueue.h"
 /*------------------------------------------------------------------------
  *  clkint  --  clock service routine
  *  called at every clock tick and when starting the deferred clock
@@ -25,7 +25,7 @@ int mdevno;				/* minor device number		*/
         if (counterOfProc>0){ 
                 if (sleepQueue[sleepHead].secs<=0)
                         deleteMemFromQueue();
-                if(timer%18==0)
+                if(counter%18==0)
                         sleepQueue[sleepHead].secs--;
         }
         
