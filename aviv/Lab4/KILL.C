@@ -20,7 +20,7 @@ SYSCALL kill(pid)
 	struct	pentry	*pptr;	     /* points to proc. table for pid */
 	int	ps;	             /* saved processor status	*/
         int pstate;
-	int i, Fpid;
+	int i, Fpid;  //fpid for lab 4
 
 	disable(ps);
 	if (isbadpid(pid) || (pptr = &proctab[pid])->pstate==PRFREE) {
