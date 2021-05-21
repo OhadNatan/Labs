@@ -3,18 +3,21 @@
 #include <kernel.h>
 #include <mem.h>
 
-SYSCALL insertNewQ(int nbytes, int sec, char **ptr)
-{ //insert to the newQ a new temp mem block
-    int i, prev, next;
+//Insert to the queue new temporery mem
+SYSCALL insert2Queue(int nbytes, int sec, char **ptr)
+{
+    int i;
+    int next;
+    int prev;
 
     if (counterInQ == 50)
     {
-        kprintf("the Queue is full ,try again leter ");
-        return -1;
+        kprintf("Queue is full\n");
+        return 1;
     }
 
     if (counterInQ == 0)
-    {              //start list from empthy
+    {//start with enpty queue
         timer = 0; //for clkint
         headNewQ = 0;
         newQ[headNewQ].size = nbytes;
@@ -23,7 +26,7 @@ SYSCALL insertNewQ(int nbytes, int sec, char **ptr)
         newQ[headNewQ].mptr = ptr;
         newQfree[0] = 1;
         counterInQ++;
-        return 1;
+        return 0;
     }
 
     if (sec < newQ[headNewQ].secs)
@@ -39,7 +42,7 @@ SYSCALL insertNewQ(int nbytes, int sec, char **ptr)
         newQfree[i] = 1;
         headNewQ = i;
         counterInQ++;
-        return 1;
+        return 0;
     }
 
     for (prev = headNewQ, next = newQ[headNewQ].next; next == -1 || newQ[next].secs < sec; prev = next, next = newQ[next].next)
@@ -49,9 +52,8 @@ SYSCALL insertNewQ(int nbytes, int sec, char **ptr)
             break;
     }
 
-    for (i = 0; i < 50; i++)
-        if (newQfree[i] == 0)
-            break;
+    //Finding the next free place at the queue
+    for (i = 0; i < 50 && newQfree[i] != 0; i++);
 
     newQ[prev].next = i;
     newQ[i].size = nbytes;
@@ -66,7 +68,7 @@ SYSCALL insertNewQ(int nbytes, int sec, char **ptr)
         newQ[i].next = -1;
     newQfree[i] = 1;
     counterInQ++;
-    return 1;
+    return 0;
 }
 
 SYSCALL deleteFromQ()
