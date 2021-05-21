@@ -37,7 +37,7 @@ int *sp1, *sp2, *sp3, *sp4;
 int ps, bp1;
 int dummy;
 int pid;
-struct pentry *nptr, *optr;
+
 struct pentry *pptr, *pptr1;
 int ip1;
 
@@ -112,6 +112,7 @@ if (currpid != pid) /* parent process only */
     // lab 4 change
     // same like resched 
     // get the proc`s ready to ctxsw
+    struct pentry *nptr, *optr;
     optr=pptr;  
     nptr=pptr1;
     optr->pstate = PRREADY;
