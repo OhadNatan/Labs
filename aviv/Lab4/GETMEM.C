@@ -13,7 +13,7 @@ word nbytes;
 {
 	int	ps;
 	word newNB;
-	struct	mblock	*p, *q, *leftover,*n;
+	struct	mblock	*p, *q, *leftover,*n; //add *n for lab 4
 
 	disable(ps);
 	if ( nbytes==0 ) {
