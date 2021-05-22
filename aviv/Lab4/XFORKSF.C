@@ -17,18 +17,18 @@ extern int INITRET();
 
 /* retip - compute ip of point of program */
 
-int retip()
-{
-int ip1;
+// int retip()
+// {
+// int ip1;
 
-  asm {
-        push ax
-        mov ax,[BP+2]
-        mov ip1,ax
-        pop ax
-      }
-  return ip1;
-}
+//   asm {
+//         push ax
+//         mov ax,[BP+2]
+//         mov ip1,ax
+//         pop ax
+//       }
+//   return ip1;
+// }
 
 int xforksonfirst()
 {

@@ -4,6 +4,7 @@
 @REM tcc -I..\..\.. -c -DTURBOC XFORK.C
 @REM tlib  xinu.lib -+ XFORK.obj
 
+
 @REM tcc -I..\..\.. -c -DTURBOC XFORKSF.C
 @REM tlib  xinu.lib -+ XFORKSF.obj
 
@@ -27,5 +28,5 @@
 
 
 
-@REM tcc -I..\..\.. lab4.c xinu.lib 
+tcc -I..\..\.. lab4.c xinu.lib 
 
