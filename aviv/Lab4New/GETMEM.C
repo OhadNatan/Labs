@@ -22,7 +22,7 @@ word nbytes;
 	}
 	nbytes = roundew(nbytes);
 	//changes for lab 4------------------------------------------------------------------------------
-	byte_number= nbytes + 4;
+
 	for ( q=&memlist, p=q->mnext ; (char *)p != NULL ; q=p, p=p->mnext )
 		if ( p->mlen == nbytes+8) {        //padding with block size 4 in every side
 			newP=(struct mblock *)((char *)p+4);
