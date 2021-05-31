@@ -54,7 +54,7 @@ void interrupt (*int9save)(void);
 void interrupt (*int70hsave)(void);
 
 int main() {
-    int i;
+    int i,charcount = 0;
     char scan_char;
 
     int9save = getvect(9);
@@ -84,8 +84,8 @@ int main() {
             MOV currentChar,AL; /* Transfer char to program          */
         }
             //printf("[main] char ackii - %d\n", currentChar);
-
-    } while ((int)currentChar != 13);
+        charcount++;
+    } while ((int)currentChar != 13 && charcount <= MAXCHAR);
 
     setvect(9, int9save);
 
@@ -113,7 +113,7 @@ int main() {
             printf("\n");
     }
     printf("\nMax Time = %d/%d , ", MaxTime(CountTimeInterval8, CurrentPlace), persec8);
-    printf("Min Time = %d/%d ,", MinTime(CountTimeInterval8, CurrentPlace), persec8);
+    printf("Min Time = %d/%d\n", MinTime(CountTimeInterval8, CurrentPlace), persec8);
     printf("Med Time = %d/%d , ", CountTimeInterval8[(CurrentPlace - 1) / 2], persec8);
     printf("Total Time = %d/%d\n", TotalTime(CountTimeInterval8, CurrentPlace), persec8);
     //--------------------------------------for int 70h------------------------------------
@@ -133,9 +133,12 @@ int main() {
             printf("\n");
     }
     printf("\nMax Time = %d/%d , ", MaxTime(CountTimeInterval70h, CurrentPlace), persec70h);
-    printf("Min Time = %d/%d ,", MinTime(CountTimeInterval70h, CurrentPlace), persec70h);
+    printf("Min Time = %d/%d\n", MinTime(CountTimeInterval70h, CurrentPlace), persec70h);
     printf("Med Time = %d/%d , ", CountTimeInterval70h[(CurrentPlace - 1) / 2], persec70h);
     printf("Total Time = %d/%d\n", TotalTime(CountTimeInterval70h, CurrentPlace), persec70h);
+
+    //printf("Total chars is : %d \n", charcount);
+
 
     return 0;
 }
