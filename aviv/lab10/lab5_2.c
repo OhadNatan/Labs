@@ -5,12 +5,20 @@
 #define ON (1)
 #define OFF (0)
 
+volatile int old_0A1h_mask, old_70h_A_mask, x71h1, x71h2, x71h3;
 volatile int count = 0, index, old_scan_code = 0, first_push = 0;
 char flag = '1';
 int intevalArray[200] = {0};
 
-void interrupt (*int9old)(void);
 void interrupt (*int8old)(void);
+void interrupt (*int9old)(void);
+void interrupt (*int_70h_old)(void);
+
+void interrupt int8handler(void)
+{
+   count++;
+   int8old();
+}
 
 void ChangeSpeaker(int status)
 {
@@ -40,7 +48,12 @@ void ChangeSpeaker(int status)
 
 void Sound(int hertz)
 {
-    unsigned divisor = 1193180L / hertz;
+    unsigned divisor;
+    if(hertz == 0){
+        printf("div 0\n");
+        hertz = 1;
+    }
+    divisor = 1193180L / hertz;
 
     ChangeSpeaker(ON);
 
@@ -53,13 +66,12 @@ void Sound(int hertz)
     } // asm
 
     //       outportb( 0x42, divisor & 0xFF ) ;
-    asm
-    {
+    asm {
         PUSH AX
-            MOV AX,
-            divisor
-            AND AX,
-            0FFh OUT 42h, AL POP AX
+        MOV AX, divisor
+        AND AX, 0FFh
+        OUT 42h, AL
+        POP AX
     } // asm
 
     //        outportb( 0x42, divisor >> 8 ) ;
@@ -78,44 +90,92 @@ void NoSound(void)
     ChangeSpeaker(OFF);
 } /*--NoSound( )------*/
 
-void change_pit(int divNum)
+void change_RTC()
 {
     asm {
-        CLI
-        push AX
-        push BX
-        MOV AL,36H 
-        OUT 43H,AL
-        MOV BX, divNum 
-        MOV AL,BL        
-        OUT 40H,AL
-        MOV AL,BH     
-        OUT 40H,AL
-        pop BX  
-        pop AX
+        CLI // Disable interrupts
+        PUSH AX
+        IN AL,0A1h // Make sure IRQ8 is not masked
+        MOV BYTE PTR old_0A1h_mask,AL
+        AND AL,0FEh // Set bit 0 of port 0A1 to zero
+        OUT 0A1h,AL //
+        IN AL,70h // Set up "Write into status register A"
+        MOV AL,0Ah //
+        OUT 70h,AL //
+        MOV AL,8Ah //
+        OUT 70h,AL //
+        IN AL,71h //
+        MOV BYTE PTR x71h1,AL // Save old value
+        MOV BYTE PTR old_70h_A_mask,AL
+        AND AL,11110000b // Change only Rate
+        OR AL,0110b // Make sure it is Rate =0110 (1Khz)
+        OUT 71h,AL // Write into status register A
+        IN AL,71h // Read to confirm write
+
+        IN AL,70h  // Set up "Write into status register B"
+        MOV AL,0Bh //
+        OUT 70h,AL //
+        MOV AL,8Bh //
+        OUT 70h,AL //
+        IN AL,71h  //
+        MOV BYTE PTR x71h2,AL // Save Old value
+        AND AL,8Fh // Mask out PI,AI,UI
+        OR AL,10h  // Enable update interrupts (UI=1) only
+        OUT 71h,AL // Write into status register  B
+        IN AL,71h  // Read to confirm write
+        MOV byte ptr x71h3,AL // Save old value
+
+        IN AL,021h  // Make sure IRQ2 is not masked
+        AND AL,0FBh // Write 0 to bit 2 of port 21h
+        OUT 021h,AL // Write to port 21h
+
+        IN AL,70h  // Set up "Read into status resister C"
+        MOV AL,0Ch // Required for for "Write into port 71h"
+        OUT 70h,AL
+        IN AL,70h
+        MOV AL,8Ch // 
+        OUT 70h,AL
+        IN AL,71h  // Read status register C 
+                    // (we do nothing with it)
+
+        IN AL,70h  // Set up "Read into status resister C"
+        MOV AL,0Dh // Required for for "Write into port 71h"
+        OUT 70h,AL
+        IN AL,70h
+        MOV AL,8Dh
+        OUT 70h,AL
+        IN AL,71h  // Read status register D 
+                    // (we do nothing with it)
+
+        POP AX
         STI
     }
 }
 
-void restore_pit()
+void restore_RTC()
 {
     asm {
         CLI
-        MOV AL,36H 
-        OUT 43H,AL
-        MOV BX, 0 
-        MOV AL,BL        
-        OUT 40H,AL
-        MOV AL,BH     
-        OUT 40H,AL
+        MOV AL, BYTE PTR old_0A1h_mask
+        OUT 0A1h,AL
+        IN AL,70h  // restore A status register
+        MOV AL,0Ah
+        OUT 70h,AL
+        MOV AL,8Ah
+        OUT 70h,AL
+        IN AL,71h
+        MOV AL, BYTE PTR old_70h_A_mask
+        OUT 71h,AL
+        IN AL,71h
         STI
     }
 }
 
-void interrupt int8handler(void)
+void interrupt int_0x70_handler(void)
 {
+    printf("70h\n");
     count++;
-    int8old();
+    int_70h_old();
 }
 
 void interrupt int9handler(void)
@@ -168,16 +228,17 @@ void print_arr()
 {
     int i;
     for (i = 0; i < index; i++)
-        if (intevalArray[i] != 0)
-            printf("%d ", intevalArray[i]);
+        printf("%d ", intevalArray[i]);
 }
 
 void main()
 {
-    int i, sum;
-    change_pit(700);
-    int8old = getvect(8);
-    setvect(8, int8handler);
+    int i, sum = 0;
+    change_RTC();
+    int_70h_old = getvect(0x70);
+    setvect(0x70, int_0x70_handler);
+    // int8old = getvect(8);
+    // setvect(8,int8handler);
     printf("Please enter string (up to 200 characters, end by pressing X)\n");
     int9old = getvect(9);
     setvect(9, int9handler);
@@ -188,9 +249,10 @@ void main()
             INT 16h
         }
     }
-    setvect(8, int8old);
+    restore_RTC();
+    // setvect(8, int8old);
+    setvect(0x70, int_0x70_handler);
     setvect(9, int9old);
-    restore_pit();
     printf("timed:\n");
     print_arr();
     printf("\nSorted:\n");
