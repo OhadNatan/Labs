@@ -2,12 +2,82 @@
 #include <stdlib.h>
 #include <dos.h>
 
+#define ON (1)
+#define OFF (0)
+
 volatile int count = 0, index, old_scan_code = 0, first_push = 0;
 char flag = '1';
 int intevalArray[200] = {0};
 
 void interrupt (*int9old)(void);
 void interrupt (*int8old)(void);
+
+void ChangeSpeaker( int status )
+ {
+  int portval;
+//   portval = inportb( 0x61 );
+
+      portval = 0;
+   asm {
+        PUSH AX
+        IN AL,61h
+        MOV byte ptr portval,AL
+        POP AX
+       }
+
+    if ( status==ON )
+     portval |= 0x03;
+      else
+       portval &=~ 0x03;
+        // outportb( 0x61, portval );
+        asm {
+          PUSH AX
+          MOV AX,portval
+          OUT 61h,AL
+          POP AX
+        } // asm
+
+	} /*--ChangeSpeaker( )----------*/
+
+
+void Sound( int hertz )	{
+        unsigned divisor = 1193180L / hertz;
+
+        ChangeSpeaker( ON );
+
+    //        outportb( 0x43, 0xB6 );
+        asm {
+            PUSH AX
+            MOV AL,0B6h
+            OUT 43h,AL
+            POP AX
+        } // asm
+
+
+        //       outportb( 0x42, divisor & 0xFF ) ;
+        asm {
+            PUSH AX
+            MOV AX,divisor
+            AND AX,0FFh
+            OUT 42h,AL
+            POP AX
+        } // asm
+
+
+        //        outportb( 0x42, divisor >> 8 ) ;
+
+        asm {
+            PUSH AX
+            MOV AX,divisor
+            MOV AL,AH
+            OUT 42h,AL
+            POP AX
+        } // asm
+    } /*--Sound( )-----*/
+
+    void NoSound( void ){
+        ChangeSpeaker( OFF );
+    } /*--NoSound( )------*/
 
 void change_pit(int divNum){
     asm{
@@ -70,8 +140,10 @@ void interrupt int9handler (void){
             index = 0;
             count = 0;
             old_scan_code = scan_code;
+            Sound(1);
         }
         else if(scan_code != old_scan_code){
+            Sound(intevalArray[index-1]);
             intevalArray[index++] = count;
             count = 0;
             old_scan_code = scan_code;
@@ -125,7 +197,7 @@ void main(){
     
     printf("total_time = %d / 1069", sum);
 
-    
+    NoSound();
 
     
 
