@@ -1,20 +1,20 @@
 #include <dos.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
-#define MAXCHAR 200
-#define STOP_BUTTON_ACKII 13
-#define PUSH_BUTTON 1
-#define RELEASE_BUTTON 2
-#define FIRST_BUTTON 0
-#define SECOND_BUTTON 1
-#define INPUT_FREQUENCY 1193182
-#define ON (1)
-#define OFF (0)
+#define MAXCHAR 200   //max char that can be input
+#define STOP_BUTTON_ACKII 13   //the stop button to stop before MAXCHAR input (can be changed)
+#define PUSH_BUTTON 1          //check if the button was pushed
+#define RELEASE_BUTTON 2       //check if the button was released
+#define FIRST_BUTTON 0         //check if the button was first in the sequenc
+#define SECOND_BUTTON 1        //check if the button was second in the sequenc 
+#define ON (1)                 //for ON the speaker
+#define OFF (0)                //for off the speaker
 
 volatile int persec70h = 1024; //how many ticks per second in TTC
-volatile int persec8 = 1069; //how many ticks per second in INT8
-volatile int latch = 1165; //the set latch is 700 , to sync with RTS 1165
+volatile int persec8 = 1024; //how many ticks per second in INT8
+volatile int latch = 1165; //the set latch is 700 , to sync with RTS latch = 1165
 volatile int button = 0; //for know if the push was first button or second
 volatile int click = -2; //for push and release
 volatile int count8 = 0;  //count ticks for 8INT
@@ -26,16 +26,17 @@ int CountTimeInterval70h[MAXCHAR] = { 0 }; // save the difference between pushes
 char currentChar ='a'; //current char that was pushed
 char CharInInt9;       //the last char that was in INT 9
 
+//for save old value of INT 70h
 volatile char OldMaskA;
 volatile char OldRegA1_70h;
 volatile char OldRegA2_70h;
 volatile char OldRegB1_70h;
 volatile char OldRegB2_70h;
+//
 
-
-void interrupt newint8(void);
-void interrupt newint9(void);
-void interrupt newint70h(void);
+void interrupt newint8(void);  //new interrupt 8
+void interrupt newint9(void);  //new interrupt 9
+void interrupt newint70h(void);//new interrupt 70h
 
 void selectionSort(int arr[], int n); //sort array
 void swap(int* x, int* y);            //swap numbers
@@ -44,11 +45,11 @@ int MinTime(int arr[], int n);        //min time in array
 int TotalTime(int arr[], int n);      //the sum of array
 void Sound(int hertz);                //make sound by difference 
 void ChangeSpeaker(int status);       //change status of speakers (ON,OFF)
-void SetInt70h();
-void RestoreInt70h();
-void SetNewLatch(int n);
-void RestoreLatch();
-
+void SetInt70h();                     //set the registers of int 70h
+void RestoreInt70h();                 //restore the changes in int 70h
+void SetNewLatch(int n);              //set new latch by the number n
+void RestoreLatch();                  //restore to the old latch 
+ 
 void interrupt (*int8save)(void);
 void interrupt (*int9save)(void);
 void interrupt (*int70hsave)(void);
@@ -56,24 +57,24 @@ void interrupt (*int70hsave)(void);
 int main() {
     int i,charcount = 0;
     char scan_char;
-
+    
+    //set the new interrupt
     int9save = getvect(9);
     setvect(9, newint9);
 
-    SetNewLatch(latch);
+    SetNewLatch(latch);    //set new latch according the test (latch = 700)
     int8save = getvect(8);
     setvect(8, newint8);
 
     SetInt70h();
     int70hsave = getvect(0x70);
     setvect(0x70, newint70h);
-
+    //
 
     printf("Please enter text up to %d chars -\n", MAXCHAR);
     printf("To finish prees enter\n");
 
-
-
+    //do (get char from user) until (charcount == MACHAR) OR (the char is STOPCHAR)
     do {
 
         //printf("[main] before scanf\n");
@@ -85,8 +86,9 @@ int main() {
         }
             //printf("[main] char ackii - %d\n", currentChar);
         charcount++;
-    } while ((int)currentChar != 13 && charcount <= MAXCHAR);
-
+    } while ((int)currentChar != STOP_BUTTON_ACKII && charcount <= MAXCHAR);
+    
+    //restore the interrupt
     setvect(9, int9save);
 
     RestoreLatch();
@@ -96,6 +98,8 @@ int main() {
     setvect(0x70, int70hsave);
 
     ChangeSpeaker(OFF);
+    //
+
     //--------------------------------------for int 8--------------------------------------
     printf("---------------------------------For INT8-------------------------------------- \n");
     printf("the time difference is- \n"); 
@@ -112,10 +116,10 @@ int main() {
         if (i % 8 == 0 && i != 0)
             printf("\n");
     }
-    printf("\nMax Time = %d/%d , ", MaxTime(CountTimeInterval8, CurrentPlace), persec8);
-    printf("Min Time = %d/%d\n", MinTime(CountTimeInterval8, CurrentPlace), persec8);
-    printf("Med Time = %d/%d , ", CountTimeInterval8[(CurrentPlace - 1) / 2], persec8);
-    printf("Total Time = %d/%d\n", TotalTime(CountTimeInterval8, CurrentPlace), persec8);
+    printf("\nMax Time = %d/%d sec, ", MaxTime(CountTimeInterval8, CurrentPlace), persec8);
+    printf("Min Time = %d/%d sec\n", MinTime(CountTimeInterval8, CurrentPlace), persec8);
+    printf("Med Time = %d/%d sec, ", CountTimeInterval8[(CurrentPlace - 1) / 2], persec8);
+    printf("Total Time = %d/%d sec\n", TotalTime(CountTimeInterval8, CurrentPlace), persec8);
     //--------------------------------------for int 70h------------------------------------
     printf("--------------------------------For INT70h------------------------------------- \n");
     printf("the time difference is- \n");
@@ -132,26 +136,31 @@ int main() {
         if (i % 12 == 0 && i != 0)
             printf("\n");
     }
-    printf("\nMax Time = %d/%d , ", MaxTime(CountTimeInterval70h, CurrentPlace), persec70h);
-    printf("Min Time = %d/%d\n", MinTime(CountTimeInterval70h, CurrentPlace), persec70h);
-    printf("Med Time = %d/%d , ", CountTimeInterval70h[(CurrentPlace - 1) / 2], persec70h);
-    printf("Total Time = %d/%d\n", TotalTime(CountTimeInterval70h, CurrentPlace), persec70h);
+    printf("\nMax Time = %d/%d sec, ", MaxTime(CountTimeInterval70h, CurrentPlace), persec70h);
+    printf("Min Time = %d/%d sec\n", MinTime(CountTimeInterval70h, CurrentPlace), persec70h);
+    printf("Med Time = %d/%d sec, ", CountTimeInterval70h[(CurrentPlace - 1) / 2], persec70h);
+    printf("Total Time = %d/%d sec\n", TotalTime(CountTimeInterval70h, CurrentPlace), persec70h);
 
-    //printf("Total chars is : %d \n", charcount);
-
+    printf("----------------------------INT8 comparison INT70h----------------------------- \n");
+    printf("the difference between INT8 ticks and INT70h ticks\n");
+    for (i = 0;i < CurrentPlace;i++) {
+        printf("[%d] ", abs(CountTimeInterval70h[i]-CountTimeInterval8[i]));
+        if (i % 12 == 0 && i != 0)
+            printf("\n");
+    }
 
     return 0;
 }
 
 void interrupt newint8(void) {
 
-    count8++;
+    count8++; //counter for num of ticks by int8
     int8save();
 
 }
 
 void interrupt newint70h(void) {
-
+    //counter for num of ticks by int70h
     count70h++;
     int70hsave();
 
@@ -168,13 +177,13 @@ void interrupt newint9(void) {
                 CharInInt9 = currentChar;   //save the button that was first push
                 if (CurrentPlace == 0) {    //check if its the first push in the system 
                     ChangeSpeaker(ON);
-                    Sound(1);
+                    Sound(1);               //for the first button the dif is 1
                 }
                 else {
-                    if (CountTimeInterval8[CurrentPlace - 1] <= 0) //in case the difference is 0
+                    if (CountTimeInterval8[CurrentPlace - 1] <= 0) //in case the difference is 0 (if the user clicked to fast)
                         Sound(1);
                     else
-                        Sound(CountTimeInterval8[CurrentPlace - 1]);
+                        Sound(CountTimeInterval8[CurrentPlace - 1]);//set sound dif to be previous dif
                 }
                 count8 = 0;             //zero the count to start counting
                 count70h = 0;             //zero the count to start counting
@@ -248,7 +257,7 @@ int TotalTime(int arr[], int n) {
     return Sum;
 }
 
-void Sound(int hertz){
+void Sound(int hertz){   //set the sount by hertz
     unsigned divisor = 1193180L / hertz;
 
     ChangeSpeaker(ON);
@@ -308,7 +317,7 @@ void ChangeSpeaker(int status){
       POP AX
     } // asm
 
-} /*--ChangeSpeaker( )----------*/
+}
 
 void SetInt70h() {
 
