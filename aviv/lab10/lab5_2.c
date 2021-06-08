@@ -58,7 +58,7 @@ void Sound(int hertz)
         PUSH AX
             MOV AX,
             divisor
-                AND AX,
+            AND AX,
             0FFh OUT 42h, AL POP AX
     } // asm
 
