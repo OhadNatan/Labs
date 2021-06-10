@@ -5,12 +5,56 @@
 #define ON (1)
 #define OFF (0)
 
-volatile int counter = 0, indexOnArray, prevCode = 0, StartFlag = 0;
-char flag = '1';
+void ChangeSpeaker( int status );
+void Sound( int hertz );
+void NoSound( void );
+void programPit(int divNum);
+void revProgramPit();
+void interrupt int8handler();
+void interrupt int9handler ();
+int sumInterval();
+void PrintArrToScreen();
+int compareForQsort(const void *a,const void *b);
+
+volatile int counter, indexOnArray, prevCode, StartFlag;
+int flag;
 int arrayOfIntervals[200] = {0};
 
 void interrupt (*int9save)(void);
 void interrupt (*int8save)(void);
+
+
+void main(){
+    counter = 0;
+    indexOnArray = 0;
+    prevCode = 0;
+    StartFlag = 0;
+    flag = 1;
+    programPit(700);
+    int8save = getvect(8);
+    setvect(8,int8handler);
+    printf("Please enter string ,no more thacn 200 chars(Stop by enter X)\n");
+    int9save = getvect(9);
+    setvect(9,int9handler);
+    while(flag != 0){
+        asm{
+            MOV AH,0
+            INT 16h
+        }
+    }
+    setvect(8,int8save);
+    setvect(9,int9save);
+    revProgramPit();
+    printf("timed:\n");
+    PrintArrToScreen();
+    printf("\nSorted:\n");
+    qsort(arrayOfIntervals, indexOnArray, sizeof(int), compareForQsort);
+    PrintArrToScreen();
+    printf("\nmax_time = %d / %d secs \n min time = %d / %d secs\nmed time = %d \n", arrayOfIntervals[indexOnArray-1], 1069, arrayOfIntervals[0], 1069 , arrayOfIntervals[(indexOnArray-1)/2]); 
+    printf("total time = %d / 1069", sumInterval());
+    NoSound();
+}
+
 
 void ChangeSpeaker( int status )
  {
@@ -130,11 +174,11 @@ void interrupt int9handler (void){
     is_pushed = scan_code & 0x80 ;
 
     if(indexOnArray == 200)
-        flag = '0'; 
+        flag = 0; 
 
     if(is_pushed == 0){
         if (scan_code == 45)
-            flag = '0'; 
+            flag = 0; 
         
         if(prevCode == 0){
             indexOnArray = 0;
@@ -164,41 +208,11 @@ void PrintArrToScreen(){
         if(arrayOfIntervals[i] != 0)    
             printf("%d ", arrayOfIntervals[i]);
 }
-
-void main(){
-    int i, sum;
-    programPit(700);
-    int8save = getvect(8);
-    setvect(8,int8handler);
-    printf("Please enter string (up to 200 characters, end by pressing X)\n");
-    int9save = getvect(9);
-    setvect(9,int9handler);
-    while(flag != '0'){
-        asm{
-            MOV AH,0
-            INT 16h
-        }
-    }
-    setvect(8,int8save);
-    setvect(9,int9save);
-    revProgramPit();
-    printf("timed:\n");
-    PrintArrToScreen();
-    printf("\nSorted:\n");
-    qsort(arrayOfIntervals, indexOnArray, sizeof(int), compareForQsort);
-    PrintArrToScreen();
-    printf("\nmax_time = %d / %d secs\n", arrayOfIntervals[indexOnArray-1], 1069);
-    printf("min_time = %d / %d secs\n", arrayOfIntervals[0], 1069 );
-    printf("med_time = %d \n", arrayOfIntervals[(indexOnArray-1)/2]);
-    
+int sumInterval(){
+    int i;
+    long int sum = 0;
     for(i = 0; i < indexOnArray ; i++)
         if(arrayOfIntervals[i] != 0)    
             sum += arrayOfIntervals[i];
-    
-    printf("total_time = %d / 1069", sum);
-
-    NoSound();
-
-    
-
+    return sum;
 }
