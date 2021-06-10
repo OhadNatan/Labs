@@ -8,17 +8,17 @@
 void ChangeSpeaker(int status);
 void Sound(int hertz);
 void NoSound(void);
-void RTCupdate();
-void RTCrestore();
-void interrupt int_0x70_handler();
-void interrupt int9handler();
-int sumInterval();
-void PrintArrToScreen();
-int compareForQsort(const void *a, const void *b);
+void RTCupdate();//our new RTC
+void RTCrestore();//to set the old RTC
+void interrupt int_0x70_handler();//for new interrupt
+void interrupt int9handler(); //for new interrupt
+int sumInterval(); //sumrize the intervals
+void PrintArrToScreen();//print the array
+int compareForQsort(const void *a, const void *b);//compare func for the sort
 
 volatile int old_0A1h_mask, old_70h_A_mask, x71h1, x71h2, x71h3;
 volatile int counter, indexOnArray, prevCode, StartFlag;
-int flag;
+int flag; 
 int arrayOfIntervals[200] = {0};
 
 void interrupt (*int9save)(void);
@@ -31,22 +31,22 @@ void main()
     prevCode = 0;
     StartFlag = 0;
     flag = 1;
-    RTCupdate();
-    int_70h_old = getvect(0x70);
-    setvect(0x70, int_0x70_handler);
+    RTCupdate(); //update for the new RTC by the requests
+    int_70h_old = getvect(0x70); //save the old interrupt
+    setvect(0x70, int_0x70_handler); //set our interrupt
     printf("Please enter string ,no more thacn 200 chars(Stop by enter X)\n");
-    int9save = getvect(9);
+    int9save = getvect(9); //save the old interupt
     setvect(9, int9handler);
-    while (flag != 0)
+    while (flag != 0) //get input without print it
     {
         asm {
             MOV AH,0
             INT 16h
         }
     }
-    setvect(0x70, int_70h_old);
-    setvect(9, int9save);
-    RTCrestore();
+    setvect(0x70, int_70h_old); //set old interrupt
+    setvect(9, int9save); ////set old interrupt
+    RTCrestore(); //return to the old RTC 
     printf("timed:\n");
     PrintArrToScreen();
     printf("\nSorted:\n");
@@ -56,7 +56,7 @@ void main()
     printf("total time = %d / 1069", sumInterval());
     NoSound();
 }
-
+//new 70h interrupt
 void interrupt int_0x70_handler(void)
 {
     int_70h_old();
@@ -127,8 +127,7 @@ void RTCrestore()
          PUSH AX
          MOV AL, BYTE PTR old_0A1h_mask
          OUT 0A1h,AL
-
-         IN AL,70h
+         IN AL,70h 
          MOV AL,0Ah
          OUT 70h,AL
          MOV AL,8Ah
@@ -221,7 +220,7 @@ void interrupt int9handler(void)
 
     is_pushed = scan_code & 0x80;
 
-    if (indexOnArray == 200)
+    if (indexOnArray == 200) //check if the array is full
         flag = 0;
 
     if (is_pushed == 0)
@@ -229,14 +228,14 @@ void interrupt int9handler(void)
         if (scan_code == 45)
             flag = 0;
 
-        if (prevCode == 0)
+        if (prevCode == 0) //check if this is not the same char
         {
             indexOnArray = 0;
             counter = 0;
             prevCode = scan_code;
             Sound(1);
         }
-        else if (scan_code != prevCode)
+        else if (scan_code != prevCode) // check if this is other char
         {
             Sound(arrayOfIntervals[indexOnArray - 1]);
             arrayOfIntervals[indexOnArray++] = counter;
