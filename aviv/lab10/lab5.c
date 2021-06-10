@@ -5,13 +5,13 @@
 #define ON (1)
 #define OFF (0)
 
-volatile int count = 0, index, old_scan_code = 0, first_push = 0;
-char flag = '1';
-int intevalArray[200] = {0};
+volatile int count = 0, index, old_scan_code = 0, first_push = 0; //count parameters
+char flag = '1'; //flag to stop main loop
+int intevalArray[200] = {0}; //inteval array
 
 void interrupt (*int9old)(void);
 void interrupt (*int8old)(void);
-
+//from the lab
 void ChangeSpeaker( int status )
  {
   int portval;
@@ -39,7 +39,7 @@ void ChangeSpeaker( int status )
 
 	} /*--ChangeSpeaker( )----------*/
 
-
+//from the lab
 void Sound( int hertz )	{
         unsigned divisor = 1193180L / hertz;
 
@@ -74,11 +74,11 @@ void Sound( int hertz )	{
             POP AX
         } // asm
     } /*--Sound( )-----*/
-
-    void NoSound( void ){
+//from the lab
+void NoSound( void ){
         ChangeSpeaker( OFF );
     } /*--NoSound( )------*/
-
+//change the ratio of int 8
 void change_pit(int divNum){
     asm{
         CLI
@@ -96,7 +96,7 @@ void change_pit(int divNum){
         STI
     }
 }
-
+//reverse the change
 void restore_pit(){
     asm{
         CLI
@@ -110,13 +110,13 @@ void restore_pit(){
         STI
     }
 }
-
+//new handler to int8
 void interrupt int8handler(void)
 {
    count++;
    int8old();
 }
-
+//new handler to int9
 void interrupt int9handler (void){ 
     int scan_code, is_pushed;
     asm{
@@ -151,13 +151,13 @@ void interrupt int9handler (void){
     }
     int9old();
 }
-
+//compare between 2 ints funtion
 int compare_function(const void *a,const void *b) {
     int *x = (int *) a;
     int *y = (int *) b;
     return *x - *y;
 }
-
+//print array function
 void print_arr(){
     int i;
     for(i = 0; i < index ; i++)
@@ -167,13 +167,13 @@ void print_arr(){
 
 void main(){
     int i, sum;
-    change_pit(700);
+    change_pit(700);//change the ratio of int8
     int8old = getvect(8);
     setvect(8,int8handler);
     printf("Please enter string (up to 200 characters, end by pressing X)\n");
     int9old = getvect(9);
     setvect(9,int9handler);
-    while(flag != '0'){
+    while(flag != '0'){//loop until the user done push or 200 chars
         asm{
             MOV AH,0
             INT 16h
@@ -181,7 +181,7 @@ void main(){
     }
     setvect(8,int8old);
     setvect(9,int9old);
-    restore_pit();
+    restore_pit();//revers to original ratio of int8
     printf("timed:\n");
     print_arr();
     printf("\nSorted:\n");
@@ -198,7 +198,4 @@ void main(){
     printf("total_time = %d / 1069", sum);
 
     NoSound();
-
-    
-
 }

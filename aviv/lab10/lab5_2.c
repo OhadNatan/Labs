@@ -5,21 +5,17 @@
 #define ON (1)
 #define OFF (0)
 
-volatile int old_0A1h_mask, old_70h_A_mask, x71h1, x71h2, x71h3;
-volatile int count, index, old_scan_code, first_push;
-char flag;
-int intevalArray[200] = {0};
+volatile int old_0A1h_mask, old_70h_A_mask, x71h1, x71h2, x71h3; //parameters to remeber the original port values
+volatile int count, index, old_scan_code, first_push; //parametrs to count
+char flag; //flag to stop the main loop
+int intevalArray[200] = {0}; //arrray of intervals
 
-void interrupt (*int8old)(void);
-void interrupt (*int9old)(void);
-void interrupt (*int_70h_old)(void);
 
-void interrupt int8handler(void)
-{
-   count++;
-   int8old();
-}
+void interrupt (*int9old)(void);//save the original interupt
+void interrupt (*int_70h_old)(void);//save the original interupt
 
+
+//from the lab 
 void ChangeSpeaker(int status)
 {
     int portval;
@@ -45,7 +41,7 @@ void ChangeSpeaker(int status)
     } // asm
 
 } /*--ChangeSpeaker( )----------*/
-
+//from the lab
 void Sound(int hertz)
 {
     unsigned divisor;
@@ -81,12 +77,12 @@ void Sound(int hertz)
         POP AX
     } // asm
 } /*--Sound( )-----*/
-
+//fro, the lab
 void NoSound(void)
 {
     ChangeSpeaker(OFF);
 } /*--NoSound( )------*/
-
+//change the rtc 70h ratio
 void change_RTC()
 {
    asm {
@@ -143,13 +139,13 @@ void change_RTC()
     STI  
    }
 }
-
+//how to handle the 70h interupt
 void interrupt int_0x70_handler(void)
 {
     int_70h_old();
     count++;
 }
-
+//how to handle the new 9 interupt
 void interrupt int9handler(void)
 {
     int scan_code, is_pushed;
@@ -188,14 +184,14 @@ void interrupt int9handler(void)
     }
     int9old();
 }
-
+//compare between 2 ints function
 int compare_function(const void *a, const void *b)
 {
     int *x = (int *)a;
     int *y = (int *)b;
     return *x - *y;
 }
-
+//function to pront an array
 void print_arr()
 {
     int i;
@@ -230,35 +226,35 @@ void main()
     long int sum = 0;
     count =  index =  old_scan_code =  first_push = 0;
     flag = '1';
-    change_RTC();
-    int_70h_old = getvect(0x70);
-    setvect(0x70, int_0x70_handler);
+    change_RTC(); //change the rtc retio
+    int_70h_old = getvect(0x70); //save the interupt 70h
+    setvect(0x70, int_0x70_handler); //change the 70h interupt
     printf("Please enter string (up to 200 characters, end by pressing X)\n");
-    int9old = getvect(9);
-    setvect(9, int9handler);
-    while (flag != '0')
+    int9old = getvect(9); //save the interupt 9
+    setvect(9, int9handler); //change the  interupt 9
+    while (flag != '0') //wait to the user done push the keyboard
     {
         asm {
             MOV AH,0
             INT 16h
         }
     }
-    restore_RTC();
-    setvect(0x70, int_0x70_handler);
-    setvect(9, int9old);
+    restore_RTC(); //return the original rtc
+    setvect(0x70, int_0x70_handler); //reverse the 70h to original
+    setvect(9, int9old);//reverse the 9 to original
     printf("timed:\n");
     print_arr();
     printf("\nSorted:\n");
-    qsort(intevalArray, index, sizeof(int), compare_function);
+    qsort(intevalArray, index, sizeof(int), compare_function); //stdlib function to sort the array
     print_arr();
-    printf("\nmax_time = %d / %d secs\n", intevalArray[index - 1], 1069);
-    printf("min_time = %d / %d secs\n", intevalArray[0], 1069);
-    printf("med_time = %d \n", intevalArray[(index - 1) / 2]);
+    printf("\nmax_time = %d / %d secs\n", intevalArray[index - 1], 1069); //get the max value from the array
+    printf("min_time = %d / %d secs\n", intevalArray[0], 1069); //same with min
+    printf("med_time = %d \n", intevalArray[(index - 1) / 2]); //med value calculation
 
-    for (i = 0; i < index; i++)
+    for (i = 0; i < index; i++) //sum all the values
         sum += intevalArray[i];
 
     printf("total_time = %ld / 1069", sum);
 
-    NoSound();
+    NoSound(); //return the sound system
 }
